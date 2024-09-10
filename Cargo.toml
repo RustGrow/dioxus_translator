@@ -1,0 +1,13 @@
+[package]
+name = "translate_route"
+version = "0.1.0"
+authors = ["DioxusGrow <dioxusgrow@proton.me>"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+dioxus = { git = "https://github.com/DioxusLabs/dioxus", features = ["web", "router"] }
+dioxus-logger = "0.5.1"
+fluent-templates = "0.10.1"
+unic-langid = "0.9.5"
