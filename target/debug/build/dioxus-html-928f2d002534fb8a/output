@@ -1,0 +1,3 @@
+cargo:rerun-if-changed=./src/ts\eval.ts
+cargo:rerun-if-changed=./src/ts\head.ts
+cargo:rerun-if-changed=./src/ts\native_eval.ts

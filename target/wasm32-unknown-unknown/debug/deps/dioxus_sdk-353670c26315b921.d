@@ -1,0 +1,11 @@
+D:\Rust\dioxus\translate\translate_route\target\wasm32-unknown-unknown\debug\deps\libdioxus_sdk-353670c26315b921.rmeta: C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\lib.rs C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\mod.rs C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\client_storage\mod.rs C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\persistence.rs C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\client_storage\web.rs
+
+D:\Rust\dioxus\translate\translate_route\target\wasm32-unknown-unknown\debug\deps\libdioxus_sdk-353670c26315b921.rlib: C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\lib.rs C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\mod.rs C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\client_storage\mod.rs C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\persistence.rs C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\client_storage\web.rs
+
+D:\Rust\dioxus\translate\translate_route\target\wasm32-unknown-unknown\debug\deps\dioxus_sdk-353670c26315b921.d: C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\lib.rs C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\mod.rs C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\client_storage\mod.rs C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\persistence.rs C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\client_storage\web.rs
+
+C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\lib.rs:
+C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\mod.rs:
+C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\client_storage\mod.rs:
+C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\persistence.rs:
+C:\Users\romas\.cargo\git\checkouts\sdk-7d13f7adcc6b4c92\d1bbc35\sdk\src\storage\client_storage\web.rs:

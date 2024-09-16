@@ -2,19 +2,17 @@
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{info, Level};
 use fluent_templates::{static_loader, Loader};
+use serde_json::Value;
 use std::{collections::HashMap, str::FromStr};
 use unic_langid::{langid, LanguageIdentifier};
-
-const US_ENGLISH: LanguageIdentifier = langid!("en-US");
-const SPANISH: LanguageIdentifier = langid!("es");
-const GERMAN: LanguageIdentifier = langid!("de");
+use utils::lang;
+mod domain;
+mod utils;
 
 static_loader! {
     static LOCALES = {
-        locales: "./assets/lang",
+        locales: "./lang",
         fallback_language: "en-US",
-        // Removes unicode isolating marks around arguments, you typically
-        // should only set to false when testing.
         customise: |bundle| bundle.set_use_isolating(false),
     };
 }
@@ -27,28 +25,45 @@ pub enum Route {
     #[route("/:lang/")]
     HomeLang { lang: String },
     // http://site.com/de/market/2024-09-09-post-name-slug/
-    // #[route("/:category/:slug/")] // Default English
-    // Blog {
-    //     category: String,
-    //     slug: String, //2024-09-09-post-name-slug
-    // },
-    // #[route("/:lang/:category/:slug/")]
-    // BlogLang {
-    //     lang: String,
-    //     category: String,
-    //     slug: String, //2024-09-09-post-name-slug
-    // },
+    #[route("/:category/:slug/")] // Default English
+    Blog {
+        category: String,
+        slug: String, //2024-09-09-post-name-slug
+    },
+    #[route("/:lang/:category/:slug/")]
+    BlogLang {
+        lang: String,
+        category: String,
+        slug: String, //2024-09-09-post-name-slug
+    },
 }
 
 fn main() {
-    // Init logger
     dioxus_logger::init(Level::INFO).expect("failed to init logger");
     info!("starting app");
+
     launch(App);
 }
 
 fn App() -> Element {
     use_context_provider(|| Signal::new("en".to_string()));
+    let mut lang: Signal<String> = use_context();
+
+    let _ = use_resource(move || async move {
+        let mut eval = eval(
+            r#"
+                let lang = localStorage.getItem("lang");
+                dioxus.send(lang);
+                "#,
+        );
+        let storage_lang = eval.recv().await.unwrap();
+        // *lang.write() = String::from(s.as_str().unwrap());
+        if storage_lang == Value::Null {
+        } else {
+            *lang.write() = String::from(storage_lang.as_str().unwrap());
+        }
+    });
+    info!("Lang is {}", lang());
 
     rsx! {
         Router::<Route> {}
@@ -61,29 +76,53 @@ fn App() -> Element {
 #[component]
 fn Home() -> Element {
     let lang: Signal<String> = use_context();
-
-    println!("US - {}", LOCALES.lookup(&US_ENGLISH, "hello-world"));
-    println!("SPANISH - {}", LOCALES.lookup(&SPANISH, "hello-world"));
-    println!("GERMAN - {}", LOCALES.lookup(&GERMAN, "hello-world"));
-
+    let nav = navigator();
+    if &lang() as &str != "en" {
+        nav.push(Route::HomeLang { lang: lang() });
+    }
     rsx! {
-        div { class: "p-4", "Homepage with language {lang}" }
-        // p { {LOCALES.lookup(&US_ENGLISH, "hello-world")} }
-        // p { {LOCALES.lookup(&LanguageIdentifier::from_str(&lang.read() as &str), "hello-world")} }
-        p { class: "p-4",
-            {LOCALES.lookup(&LanguageIdentifier::from_str(&lang() as &str ).unwrap(), "hello-world")}
-        }
-        div {
-            // h1 { class: " p-4", "Change language to {lang}" }
-            div { class: "p-4", Languages {} }
-        }
+        HomeContent {}
     }
 }
 
 #[component]
 fn HomeLang(lang: String) -> Element {
+    let lang: Signal<String> = use_context();
+    let nav = navigator();
+    if &lang() as &str == "en" {
+        nav.push(Route::Home {});
+    }
     rsx! {
-        Home {}
+        HomeContent {}
+    }
+}
+
+#[component]
+fn HomeContent() -> Element {
+    let lang: Signal<String> = use_context();
+    let lang_id = &LanguageIdentifier::from_str(&lang() as &str).unwrap();
+    rsx! {
+        div { class: "p-4", "Homepage with language {lang}" }
+        p { class: "p-4", {LOCALES.lookup(lang_id, "hello-world")} }
+        div {
+            div { class: "p-4", Languages {} }
+        }
+    }
+}
+
+// http://site.com/market/2024-09-09-post-name-slug/
+#[component]
+fn Blog(category: String, slug: String) -> Element {
+    rsx! {
+        Link { to: Route::Home {}, "Go to counter" }
+    }
+}
+
+// http://site.com/de/market/2024-09-09-post-name-slug/
+#[component]
+fn BlogLang(lang: String, category: String, slug: String) -> Element {
+    rsx! {
+        Blog { category, slug }
     }
 }
 
@@ -91,9 +130,7 @@ fn HomeLang(lang: String) -> Element {
 fn Languages() -> Element {
     let mut lang: Signal<String> = use_context();
 
-    // let change_to_english = move |_| i18n.set_language(langid!("en"));
-    // let change_to_spanish = move |_| i18n.set_language(langid!("es-ES"));
-    let lang_code = vec!["en", "de", "es"];
+    let lang_code = vec!["en", "de", "es", "ar"];
 
     rsx! {
         ul { class: "flex flex-row space-x-5",
@@ -102,14 +139,26 @@ fn Languages() -> Element {
                     match code {
                         "en" => rsx!{
                             Link {
-                                onclick: move |_| lang.set(code.to_string()),
+                                onclick: move |_| {
+                                    lang.set(code.to_string());
+                                    let eval = eval(r#"
+                                    let code = await dioxus.recv();
+                                    localStorage.setItem("lang", code);"#);
+                                    eval.send(code.into()).unwrap();
+                                },
                                 to: Route::Home {},
                                 "{code}"
                             },
                         },
                         _ => rsx!{
                             Link {
-                                onclick: move |_| lang.set(code.to_string()),
+                                onclick: move |_| {
+                                    lang.set(code.to_string());
+                                    let eval = eval(r#"
+                                    let code = await dioxus.recv();
+                                    localStorage.setItem("lang", code);"#);
+                                    eval.send(code.into()).unwrap();
+                                },
                                 to: Route::HomeLang {
                                     lang: code.to_string(),
                                 },
@@ -120,19 +169,5 @@ fn Languages() -> Element {
                 }
             }
         }
-    }
-}
-
-#[component]
-fn Blog(lang: String) -> Element {
-    rsx! {
-        Link { to: Route::Home {}, "Go to counter" }
-    }
-}
-
-#[component]
-fn BlogLang(lang: String) -> Element {
-    rsx! {
-        Link { to: Route::Home {}, "Go to counter" }
     }
 }
