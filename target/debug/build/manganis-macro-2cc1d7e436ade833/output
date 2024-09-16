@@ -1,2 +1,0 @@
-cargo:rerun-if-changed=C:\Users\romas\.cargo\assets\config.toml
-cargo:rerun-if-env-changed=MANGANIS_SUPPORT

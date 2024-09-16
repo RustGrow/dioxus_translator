@@ -1,2 +1,0 @@
-cargo:rustc-cfg=unsafe_op_in_unsafe_fn_stable
-cargo:rustc-cfg=io_error_kind_unsupported_stable
