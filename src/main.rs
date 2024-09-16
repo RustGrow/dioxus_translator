@@ -6,6 +6,7 @@ use serde_json::Value;
 use std::{collections::HashMap, str::FromStr};
 use unic_langid::{langid, LanguageIdentifier};
 use utils::lang;
+mod constants;
 mod domain;
 mod utils;
 
