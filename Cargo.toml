@@ -11,3 +11,10 @@ dioxus = { git = "https://github.com/DioxusLabs/dioxus", features = ["web", "rou
 dioxus-logger = "0.5.1"
 fluent-templates = "0.10.1"
 unic-langid = "0.9.5"
+dioxus-sdk = { git = "https://github.com/DioxusLabs/sdk", branch = "feat/dioxus-0.6", features = ["storage"] }
+dioxus-i18n = "0.2.5"
+
+
+[patch.crates-io]
+dioxus = { git = "https://github.com/DioxusLabs/dioxus" }
+dioxus-signals = { git = "https://github.com/DioxusLabs/dioxus" }

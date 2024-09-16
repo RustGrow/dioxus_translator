@@ -52,6 +52,7 @@ fn App() -> Element {
 
     rsx! {
         Router::<Route> {}
+        // Use Tailwind CDN for prod
         script { src: asset!("https://cdn.tailwindcss.com") }
         // for manganis
         head::Link { rel: "stylesheet", href: asset!("./assets/tailwind.css") }
@@ -61,18 +62,20 @@ fn App() -> Element {
 #[component]
 fn Home() -> Element {
     let lang: Signal<String> = use_context();
+    let lang_id = &LanguageIdentifier::from_str(&lang() as &str).unwrap();
+    // let mut count_session = use_singleton_persistent(|| 0);
+    // let mut count_local = use_synced_storage::<LocalStorage, i32>("synced".to_string(), || 0);
 
-    println!("US - {}", LOCALES.lookup(&US_ENGLISH, "hello-world"));
-    println!("SPANISH - {}", LOCALES.lookup(&SPANISH, "hello-world"));
-    println!("GERMAN - {}", LOCALES.lookup(&GERMAN, "hello-world"));
+    // println!("US - {}", LOCALES.lookup(&US_ENGLISH, "hello-world"));
+    // println!("SPANISH - {}", LOCALES.lookup(&SPANISH, "hello-world"));
+    // println!("GERMAN - {}", LOCALES.lookup(&GERMAN, "hello-world"));
 
     rsx! {
         div { class: "p-4", "Homepage with language {lang}" }
         // p { {LOCALES.lookup(&US_ENGLISH, "hello-world")} }
         // p { {LOCALES.lookup(&LanguageIdentifier::from_str(&lang.read() as &str), "hello-world")} }
-        p { class: "p-4",
-            {LOCALES.lookup(&LanguageIdentifier::from_str(&lang() as &str ).unwrap(), "hello-world")}
-        }
+        // p { {macros!(lang, "hello-world")} }
+        p { class: "p-4", {LOCALES.lookup(lang_id, "hello-world")} }
         div {
             // h1 { class: " p-4", "Change language to {lang}" }
             div { class: "p-4", Languages {} }
@@ -90,9 +93,6 @@ fn HomeLang(lang: String) -> Element {
 #[component]
 fn Languages() -> Element {
     let mut lang: Signal<String> = use_context();
-
-    // let change_to_english = move |_| i18n.set_language(langid!("en"));
-    // let change_to_spanish = move |_| i18n.set_language(langid!("es-ES"));
     let lang_code = vec!["en", "de", "es"];
 
     rsx! {
