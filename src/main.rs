@@ -1,14 +1,18 @@
 #![allow(non_snake_case)]
+mod constants;
+mod domain;
+mod repo;
+mod utils;
+
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{info, Level};
 use fluent_templates::{static_loader, Loader};
+use redb::{AccessGuard, Database, Error, ReadableTable, TableDefinition};
+use repo::db::*;
 use serde_json::Value;
 use std::{collections::HashMap, str::FromStr};
 use unic_langid::{langid, LanguageIdentifier};
 use utils::lang;
-mod constants;
-mod domain;
-mod utils;
 
 static_loader! {
     static LOCALES = {
@@ -37,12 +41,14 @@ pub enum Route {
         category: String,
         slug: String, //2024-09-09-post-name-slug
     },
+    #[route("/:..route")]
+    PageNotFound { route: Vec<String> },
 }
 
 fn main() {
     dioxus_logger::init(Level::INFO).expect("failed to init logger");
     info!("starting app");
-
+    // let db = Database::create("my_db.redb").expect("Error");
     launch(App);
 }
 
@@ -53,23 +59,62 @@ fn App() -> Element {
     let _ = use_resource(move || async move {
         let mut eval = eval(
             r#"
+                // Function to set lang and dir attributes for the <html> tag
+                function setHtmlLanguageAndDirection(lang, dir) {
+                    var htmlElement = document.documentElement;
+                    htmlElement.lang = lang;
+                    if (dir) {
+                        htmlElement.dir = dir;
+                    } else {
+                        htmlElement.removeAttribute('dir');
+                    }
+                }
+
                 let lang = localStorage.getItem("lang");
+                let browserLang = navigator.language || navigator.userLanguage;
+                let langCode = browserLang.substring(0, 2);
+
+                if (langCode === "zh") {
+                    if (browserLang === "zh-CN" || browserLang === "zh-SG") {
+                        langCode = "zh-Hans"; // Simplified Chinese
+                    } else if (browserLang === "zh-TW" || browserLang === "zh-HK" || browserLang === "zh-MO") {
+                        langCode = "zh-Hant"; // Traditional Chinese
+                    }
+                }
+
+                // If there is no language value in local storage, set it
+                if (!lang) {
+                    localStorage.setItem("lang", langCode);
+                    lang = langCode;
+                }
+
+                // Set language and direction in HTML
+                if (lang === "ar" || lang === "he") {
+                    setHtmlLanguageAndDirection(lang, 'rtl');
+                } else {
+                    setHtmlLanguageAndDirection(lang, null);
+                }
+                // let arr = [lang, langCode];
                 dioxus.send(lang);
                 "#,
         );
-        let storage_lang = eval.recv().await.unwrap();
-        // *lang.write() = String::from(s.as_str().unwrap());
-        if storage_lang == Value::Null {
-        } else {
-            *lang.write() = String::from(storage_lang.as_str().unwrap());
-        }
+        let js_lang = eval.recv().await.unwrap();
+        *lang.write() = String::from(js_lang.as_str().unwrap());
+
+        // if js_lang == Value::Null {
+        //     // Get lang from browser lang
+        //     // *lang.write() = String::from(js_lang[1].as_str().unwrap());
+        //     // *lang.write() = String::from("de");
+        // } else {
+        //     // Get lang from browser storage
+        //     *lang.write() = String::from(js_lang.as_str().unwrap());
+        // }
     });
     info!("Lang is {}", lang());
 
     rsx! {
         Router::<Route> {}
         script { src: asset!("https://cdn.tailwindcss.com") }
-        // for manganis
         head::Link { rel: "stylesheet", href: asset!("./assets/tailwind.css") }
     }
 }
@@ -128,6 +173,15 @@ fn BlogLang(lang: String, category: String, slug: String) -> Element {
 }
 
 #[component]
+fn PageNotFound(route: Vec<String>) -> Element {
+    rsx! {
+        h1 { "Page not found" }
+        p { "We are terribly sorry, but the page you requested doesn't exist." }
+        pre { color: "red", "log:\nattempted to navigate to: {route:?}" }
+    }
+}
+
+#[component]
 fn Languages() -> Element {
     let mut lang: Signal<String> = use_context();
 
@@ -142,9 +196,31 @@ fn Languages() -> Element {
                             Link {
                                 onclick: move |_| {
                                     lang.set(code.to_string());
+                    
                                     let eval = eval(r#"
-                                    let code = await dioxus.recv();
-                                    localStorage.setItem("lang", code);"#);
+                                    // Function to set lang and dir attributes for the <html> tag
+                                    function setHtmlLanguageAndDirection(lang, dir) {
+                                        var htmlElement = document.documentElement;
+                                        htmlElement.lang = lang;
+                                        if (dir) {
+                                            htmlElement.dir = dir;
+                                        } else {
+                                            htmlElement.removeAttribute('dir');
+                                        }
+                                    }
+                    
+                                    let lang = await dioxus.recv();
+                                    localStorage.setItem("lang", lang);
+                                    
+                                    // Set language and direction in HTML
+                                    if (lang === "ar" || lang === "he") {
+                                        setHtmlLanguageAndDirection(lang, 'rtl');
+                                    } else {
+                                        setHtmlLanguageAndDirection(lang, null);
+                                    }
+                                    
+                                    "#);
+                    
                                     eval.send(code.into()).unwrap();
                                 },
                                 to: Route::Home {},
@@ -155,9 +231,31 @@ fn Languages() -> Element {
                             Link {
                                 onclick: move |_| {
                                     lang.set(code.to_string());
+                    
                                     let eval = eval(r#"
-                                    let code = await dioxus.recv();
-                                    localStorage.setItem("lang", code);"#);
+                                    // Function to set lang and dir attributes for the <html> tag
+                                    function setHtmlLanguageAndDirection(lang, dir) {
+                                        var htmlElement = document.documentElement;
+                                        htmlElement.lang = lang;
+                                        if (dir) {
+                                            htmlElement.dir = dir;
+                                        } else {
+                                            htmlElement.removeAttribute('dir');
+                                        }
+                                    }
+                    
+                                    let lang = await dioxus.recv();
+                                    localStorage.setItem("lang", lang);
+                                    
+                                    // Set language and direction in HTML
+                                    if (lang === "ar" || lang === "he") {
+                                        setHtmlLanguageAndDirection(lang, 'rtl');
+                                    } else {
+                                        setHtmlLanguageAndDirection(lang, null);
+                                    }
+                                    
+                                    "#);
+                    
                                     eval.send(code.into()).unwrap();
                                 },
                                 to: Route::HomeLang {
