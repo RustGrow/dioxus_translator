@@ -1,18 +1,10 @@
 #![allow(non_snake_case)]
-mod constants;
-mod domain;
-mod repo;
-mod utils;
-
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{info, Level};
 use fluent_templates::{static_loader, Loader};
-use redb::{AccessGuard, Database, Error, ReadableTable, TableDefinition};
-use repo::db::*;
-use serde_json::Value;
-use std::{collections::HashMap, str::FromStr};
-use unic_langid::{langid, LanguageIdentifier};
-use utils::lang;
+// use serde_json::Value;
+use std::str::FromStr;
+use unic_langid::LanguageIdentifier;
 
 static_loader! {
     static LOCALES = {
@@ -29,18 +21,6 @@ pub enum Route {
     Home {},
     #[route("/:lang/")]
     HomeLang { lang: String },
-    // http://site.com/de/market/2024-09-09-post-name-slug/
-    #[route("/:category/:slug/")] // Default English
-    Blog {
-        category: String,
-        slug: String, //2024-09-09-post-name-slug
-    },
-    #[route("/:lang/:category/:slug/")]
-    BlogLang {
-        lang: String,
-        category: String,
-        slug: String, //2024-09-09-post-name-slug
-    },
     #[route("/:..route")]
     PageNotFound { route: Vec<String> },
 }
@@ -48,7 +28,6 @@ pub enum Route {
 fn main() {
     dioxus_logger::init(Level::INFO).expect("failed to init logger");
     info!("starting app");
-    // let db = Database::create("my_db.redb").expect("Error");
     launch(App);
 }
 
@@ -94,20 +73,26 @@ fn App() -> Element {
                 } else {
                     setHtmlLanguageAndDirection(lang, null);
                 }
-                // let arr = [lang, langCode];
+
                 dioxus.send(lang);
+
+                // How to get arr from JS to Dioxus
+                // let arr = [lang, langCode];
+                // dioxus.send(arr);
+                
                 "#,
         );
         let js_lang = eval.recv().await.unwrap();
         *lang.write() = String::from(js_lang.as_str().unwrap());
 
-        // if js_lang == Value::Null {
+        // Working with array from JS
+        // if js_lang[0] == Value::Null {
         //     // Get lang from browser lang
         //     // *lang.write() = String::from(js_lang[1].as_str().unwrap());
         //     // *lang.write() = String::from("de");
         // } else {
         //     // Get lang from browser storage
-        //     *lang.write() = String::from(js_lang.as_str().unwrap());
+        //     *lang.write() = String::from(js_lang[0].as_str().unwrap());
         // }
     });
     info!("Lang is {}", lang());
@@ -156,22 +141,6 @@ fn HomeContent() -> Element {
     }
 }
 
-// http://site.com/market/2024-09-09-post-name-slug/
-#[component]
-fn Blog(category: String, slug: String) -> Element {
-    rsx! {
-        Link { to: Route::Home {}, "Go to counter" }
-    }
-}
-
-// http://site.com/de/market/2024-09-09-post-name-slug/
-#[component]
-fn BlogLang(lang: String, category: String, slug: String) -> Element {
-    rsx! {
-        Blog { category, slug }
-    }
-}
-
 #[component]
 fn PageNotFound(route: Vec<String>) -> Element {
     rsx! {
@@ -188,9 +157,9 @@ fn Languages() -> Element {
     let lang_code = vec!["en", "de", "es", "ar"];
 
     rsx! {
-        ul { class: "flex flex-row space-x-5",
+        ul { class: "flex flex-row w-full",
             for code in lang_code {
-                li { class: " ring-1 bg-blue-200 px-2 py-0 rounded-lg",
+                li { class: "ring-1 bg-blue-200 px-2 mx-2 rounded-lg",
                     match code {
                         "en" => rsx!{
                             Link {
