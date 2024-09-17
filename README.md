@@ -14,6 +14,12 @@
     - Set the default language to English (en).
     - Maintain the same language path when reloading the page.
 
+## Important
+Reinstall the CLI to the git version
+```bash
+cargo install --git https://github.com/dioxuslabs/dioxus dioxus-cli --locked --force
+```
+
 # Development
 
 1. Install npm: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
