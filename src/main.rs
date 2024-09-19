@@ -122,7 +122,6 @@ fn App() -> Element {
 
     rsx! {
         head::Link { rel: "stylesheet", href: STYLE }
-        Script { src: "https://cdn.tailwindcss.com" }
         Router::<Route> {}
     }
 }
