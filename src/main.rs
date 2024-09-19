@@ -10,7 +10,7 @@ const STYLE: &str = asset!("./assets/tailwind.css");
 
 static_loader! {
     static LOCALES = {
-        locales: "./lang",
+        locales: "./assets/lang",
         fallback_language: "en-US",
         customise: |bundle| bundle.set_use_isolating(false),
     };
@@ -121,7 +121,7 @@ fn App() -> Element {
     rsx! {
         head::Link { rel: "stylesheet", href: STYLE }
         // Note: For development use only. Remove before production.
-        Script { src: "https://cdn.tailwindcss.com" }
+        // Script { src: "https://cdn.tailwindcss.com" }
         Router::<Route> {}
     }
 }
