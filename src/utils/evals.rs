@@ -2,7 +2,7 @@ use dioxus::prelude::*;
 use dioxus_logger::tracing::info;
 
 #[component]
-pub fn Lang_settings() -> Element {
+pub fn LangSettings() -> Element {
     let mut lang: Signal<String> = use_context();
     let _ = use_resource(move || async move {
         let mut eval = eval(
@@ -81,7 +81,7 @@ pub fn Lang_settings() -> Element {
     rsx! {}
 }
 
-pub fn Button_Lang() -> UseEval {
+pub fn ButtonLang() -> UseEval {
     eval(
         r#"
         // Function to set lang and dir attributes for the <html> tag

@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>translate_route</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />    
-    <title>translate_route</title>    
-  </head>
+  <link rel="preload" href="/./assets/dioxus/translate_route_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+            <link rel="preload" href="/./assets/dioxus/translate_route.js" as="script">
+            </head>
   <body>
     <div id="main"></div>
-    <!-- Note the usage of `type=module` here as this is an ES6 module -->
-    <script type="module">
-      import init from "/./assets/dioxus/translate_route.js";
-      init("/./assets/dioxus/translate_route_bg.wasm").then((wasm) => {
-        if (wasm.__wbindgen_start == undefined) {
-          wasm.main();
-        }
-      });
-    </script>
-    <!-- <script src="/static/prism/prism.js"></script>
-    {script_include} -->
-    
-  </body>
+  <script>
+            // We can't use a module script here because we need to start the script immediately when streaming
+            import("/./assets/dioxus/translate_route.js").then(
+                ({ default: init }) => {
+                init("/./assets/dioxus/translate_route_bg.wasm").then((wasm) => {
+                    if (wasm.__wbindgen_start == undefined) {
+                    wasm.main();
+                    }
+                });
+                }
+            );
+            </script>
+            
+            </body>
 </html>
