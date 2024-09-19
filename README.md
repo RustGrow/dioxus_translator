@@ -16,7 +16,7 @@
 
 <div align="center">
   <h3>  
-    <a href="https://crabsburger.netlify.app/"> Website </a>
+    <a href="https://multilanguage-dioxus.netlify.app/"> Website </a>
   </h3>
 </div>
 
@@ -156,3 +156,15 @@ dx check
 dx build --release
 ```
 4. The `dist` folder is by default the main project folder where the finished site is located.
+
+# Netlify deployment
+
+Deploying an application in netlify requires a special settings file to be uploaded to the assets folder so that it is automatically loaded when the project is built. In this repository it is already in the assets folder.
+
+netlify.toml
+```toml
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
