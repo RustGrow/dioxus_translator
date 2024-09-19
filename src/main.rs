@@ -8,7 +8,8 @@ use unic_langid::LanguageIdentifier;
 
 const STYLE: &str = asset!("./assets/tailwind.css");
 // Note: For development use only. Remove before production.
-const TAILWIND_CDN: &str = asset!("https://cdn.tailwindcss.com");
+// const TAILWIND_CDN: &str = asset!("https://cdn.tailwindcss.com");
+// const TAILWIND_CDN: &str = manganis::mg!("https://cdn.tailwindcss.com");
 
 static_loader! {
     static LOCALES = {
@@ -123,7 +124,8 @@ fn App() -> Element {
     rsx! {
         head::Link { rel: "stylesheet", href: STYLE }
         // Note: For development use only. Remove before production.
-        script { src: TAILWIND_CDN }
+        Script { src: "https://cdn.tailwindcss.com" }
+        // script { src: TAILWIND_CDN }
         Router::<Route> {}
     }
 }
@@ -190,7 +192,7 @@ fn NavBar() -> Element {
                                 Link {
                                     onclick: move |_| {
                                         lang.set(code.to_string());
-                        
+
                                         let eval = eval(r#"
                                         // Function to set lang and dir attributes for the <html> tag
                                         function setHtmlLanguageAndDirection(lang, dir) {
@@ -214,7 +216,7 @@ fn NavBar() -> Element {
                                         }
                                         
                                         "#);
-                        
+
                                         eval.send(code.into()).unwrap();
                                     },
                                     to: Route::Home {},
@@ -225,7 +227,7 @@ fn NavBar() -> Element {
                                 Link {
                                     onclick: move |_| {
                                         lang.set(code.to_string());
-                        
+
                                         let eval = eval(r#"
                                         // Function to set lang and dir attributes for the <html> tag
                                         function setHtmlLanguageAndDirection(lang, dir) {
@@ -249,7 +251,7 @@ fn NavBar() -> Element {
                                         }
                                         
                                         "#);
-                        
+
                                         eval.send(code.into()).unwrap();
                                     },
                                     to: Route::HomeLang {

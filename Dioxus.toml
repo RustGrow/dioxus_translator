@@ -24,7 +24,7 @@ title = "translate_route"
 reload_html = true
 
 # which files or dirs will be watcher monitoring
-watch_path = ["src", "assets"]
+watch_path = ["src", "assets", "lang"]
 
 # include `assets` in web platform
 [web.resource]
