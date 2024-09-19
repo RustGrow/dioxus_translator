@@ -14,6 +14,12 @@
     - Set the default language to English (en).
     - Maintain the same language path when reloading the page.
 
+<div align="center">
+  <h3>  
+    <a href="https://crabsburger.netlify.app/"> Website </a>
+  </h3>
+</div>
+
 ### Important. This project uses the web platform
 # Quick start
 1. Reinstall the CLI to the git version.
@@ -78,36 +84,22 @@ npx tailwindcss -i ./input.css -o ./assets/tailwind.css --watch
 dx serve --hot-reload true
 ```
 
-5. Add the following support to main.rs inside rsx:
+5. The Script now has some bug
 ```rust
-rsx!{    
-    head::Link { rel: "stylesheet", href: asset!("./assets/tailwind.css") }
-    // Note: For development use only. Remove before production.
-    Script { src: "https://cdn.tailwindcss.com" }
-}
+❌ Script { src: "https://cdn.tailwindcss.com" } //Has some bug
 ```
+You need to set a script reference to use Tailwind CDN inside Dioxus.toml
+✔️ Tested
+```toml
+# include `assets` in web platform
+[web.resource]
 
-Example component:
-```rust
-#[component]
-fn App() -> Element {
-    const STYLE: &str = asset!("./assets/tailwind.css");
-    rsx! {
-        // For Play CDN to try Tailwind
-        head::Link { rel: "stylesheet", href: STYLE }
-        // Note: For development use only. Remove before production.
-        Script { src: "https://cdn.tailwindcss.com" }
+# CSS style file
 
-        img { src: "header.svg", id: "header" }
-        div { id: "links",
-            div { class: "p-4 bg-yellow-300", "I" }
-            p { "really" }
-            div { class: "red p-2", "love" }
-            div { class: "yellow", "Dioxus" }
-            p { class: "red bg-slate-300", "team." }
-        }
-    }
-}
+style = []
+
+# Javascript code file
+script = ["https://cdn.tailwindcss.com"]
 ```
 
 # If you need a local stylesheet for custom styles inside input.css.

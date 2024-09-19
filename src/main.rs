@@ -49,8 +49,6 @@ fn App() -> Element {
         // Lang JS from component
         Lang_settings {}
         head::Link { rel: "stylesheet", href: STYLE }
-        // Note: For development use only. Remove before production.
-        Script { src: "https://cdn.tailwindcss.com" }
         Router::<Route> {}
     }
 }
