@@ -1,10 +1,12 @@
 #![allow(non_snake_case)]
 mod constants;
+mod model;
 mod ui;
 mod utils;
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{info, Level};
 use fluent_templates::{static_loader, Loader};
+use model::app_state::ApplicationData;
 use ui::nav_bar::NavBar;
 // use serde_json::Value;
 use std::str::FromStr;
@@ -48,6 +50,7 @@ fn main() {
 
 fn App() -> Element {
     use_context_provider(|| Signal::new("en".to_string()));
+    use_context_provider(ApplicationData::new);
     rsx! {
         LangSettings {}
         head::Link { rel: "stylesheet", href: STYLE }
