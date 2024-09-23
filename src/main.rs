@@ -9,19 +9,10 @@ use fluent_templates::{static_loader, Loader};
 use model::app_state::ApplicationData;
 use ui::nav_bar::NavBar;
 // use serde_json::Value;
+use constants::{LOCALES, STYLE};
 use std::str::FromStr;
 use unic_langid::LanguageIdentifier;
 use utils::evals::*;
-
-const STYLE: &str = asset!("./assets/tailwind.css");
-
-static_loader! {
-    static LOCALES = {
-        locales: "./lang",
-        fallback_language: "en-US",
-        customise: |bundle| bundle.set_use_isolating(false),
-    };
-}
 
 #[derive(Clone, Routable, Debug, PartialEq)]
 #[rustfmt::skip]
