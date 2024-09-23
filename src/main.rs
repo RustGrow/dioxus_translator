@@ -1,8 +1,11 @@
 #![allow(non_snake_case)]
+mod constants;
+mod ui;
 mod utils;
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{info, Level};
 use fluent_templates::{static_loader, Loader};
+use ui::nav_bar::NavBar;
 // use serde_json::Value;
 use std::str::FromStr;
 use unic_langid::LanguageIdentifier;
@@ -82,7 +85,7 @@ fn HomeContent() -> Element {
     let lang_id = &LanguageIdentifier::from_str(&lang() as &str).unwrap();
     rsx! {
         div { class: "p-4 text-2xl",
-            h1 { class: " font-bold ", {LOCALES.lookup(lang_id, "hello-world")} }
+            h1 { class: "font-bold", {LOCALES.lookup(lang_id, "hello-world")} }
             div { {LOCALES.lookup(lang_id, "homepage")} }
             p { {LOCALES.lookup(lang_id, "dioxus")} }
         }
@@ -95,49 +98,5 @@ fn PageNotFound(route: Vec<String>) -> Element {
         h1 { "Page not found" }
         p { "We are terribly sorry, but the page you requested doesn't exist." }
         pre { color: "red", "log:\nattempted to navigate to: {route:?}" }
-    }
-}
-
-#[component]
-fn NavBar() -> Element {
-    let mut lang: Signal<String> = use_context();
-    let lang_code = vec!["en", "de", "es", "ar"];
-
-    rsx! {
-        nav { class: "px-2 py-4 shadow-lg",
-            ul { class: "flex flex-row w-full",
-                for code in lang_code {
-                    li { class: "ring-1 bg-blue-200 px-2 mx-2 rounded-lg",
-                        match code {
-                            "en" => rsx!{
-                                Link {
-                                    onclick: move |_| {
-                                        lang.set(code.to_string());
-                                        let eval = ButtonLang();
-                                        eval.send(code.into()).unwrap();
-                                    },
-                                    to: Route::Home {},
-                                    "{code}"
-                                },
-                            },
-                            _ => rsx!{
-                                Link {
-                                    onclick: move |_| {
-                                        lang.set(code.to_string());
-                                        let eval = ButtonLang();
-                                        eval.send(code.into()).unwrap();
-                                    },
-                                    to: Route::HomeLang {
-                                        lang: code.to_string(),
-                                    },
-                                    "{code}"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        Outlet::<Route> {}
     }
 }

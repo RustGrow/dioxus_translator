@@ -2453,6 +2453,7 @@ dependencies = [
  "dioxus",
  "dioxus-logger",
  "fluent-templates",
+ "once_cell",
  "serde_json",
  "unic-langid",
 ]
