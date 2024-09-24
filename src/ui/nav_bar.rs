@@ -22,6 +22,7 @@ pub fn NavBar() -> Element {
                                         (data.lang_code).set(code.to_string());
                                         let eval = ButtonLang();
                                         eval.send(code.into()).unwrap();
+                                        (data.show_lang_menu).set(false);
                                     },
                                     to: Route::Home {},
                                     "{code}"
@@ -33,6 +34,7 @@ pub fn NavBar() -> Element {
                                         (data.lang_code).set(code.to_string());
                                         let eval = ButtonLang();
                                         eval.send(code.into()).unwrap();
+                                        (data.show_lang_menu).set(false);
                                     },
                                     to: Route::HomeLang {
                                         lang: code.to_string(),

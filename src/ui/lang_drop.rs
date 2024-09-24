@@ -13,7 +13,7 @@ use unic_langid::LanguageIdentifier;
 pub fn LangDropDown() -> Element {
     // let mut lang: Signal<String> = use_context();
     let mut data = use_context::<ApplicationData>();
-    let mut show_lang_menu = use_signal(|| false);
+    // let mut show_lang_menu = use_signal(|| false);
     let lang_id = &LanguageIdentifier::from_str(&(data.lang_code)() as &str).unwrap();
     let rtl = use_memo(move || {
         if (data.lang_code)() == "ar" {
@@ -31,7 +31,7 @@ pub fn LangDropDown() -> Element {
                     id: "user-menu-button",
                     aria_expanded: "false",
                     aria_haspopup: "true",
-                    onclick: move |_| show_lang_menu.toggle(),
+                    onclick: move |_| (data.show_lang_menu).toggle(),
                     // "Up high!"
                     span { class: "absolute -inset-1.5" }
                     span { class: "sr-only", "Open user menu" }
@@ -41,7 +41,7 @@ pub fn LangDropDown() -> Element {
             }
             div {
                 class: "absolute z-10 mt-2 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none",
-                class: if !show_lang_menu() { "hidden" },
+                class: if !(data.show_lang_menu)() { "hidden" },
                 class: if !rtl() { "right-0" } else { "left-0" },
                 role: "menu",
                 aria_orientation: "vertical",
@@ -55,7 +55,7 @@ pub fn LangDropDown() -> Element {
                                         (data.lang_code).set(code.to_string());
                                         let eval = ButtonLang();
                                         eval.send((*code).into()).unwrap();
-                                        show_lang_menu.toggle();
+                                        (data.show_lang_menu).toggle();
                                     },
                                     to: Route::Home {},
                                         div{ class: "col-span-1 ",  { flag } },
@@ -68,7 +68,7 @@ pub fn LangDropDown() -> Element {
                                         (data.lang_code).set(code.to_string());
                                         let eval = ButtonLang();
                                         eval.send((*code).into()).unwrap();
-                                        show_lang_menu.toggle();
+                                        (data.show_lang_menu).toggle();
                                     },
                                     to: Route::HomeLang {
                                         lang: code.to_string(),
