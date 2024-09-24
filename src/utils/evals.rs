@@ -1,9 +1,12 @@
 use dioxus::prelude::*;
 use dioxus_logger::tracing::info;
 
+use crate::model::app_state::ApplicationData;
+
 #[component]
 pub fn LangSettings() -> Element {
-    let mut lang: Signal<String> = use_context();
+    // let mut lang: Signal<String> = use_context();
+    let mut data = use_context::<ApplicationData>();
     let _ = use_resource(move || async move {
         let mut eval = eval(
             r#"
@@ -65,7 +68,7 @@ pub fn LangSettings() -> Element {
             "#,
         );
         let js_lang = eval.recv().await.unwrap();
-        *lang.write() = String::from(js_lang.as_str().unwrap());
+        *(data.lang_code).write() = String::from(js_lang.as_str().unwrap());
 
         // Working with array from JS
         // if js_lang[0] == Value::Null {
@@ -77,7 +80,7 @@ pub fn LangSettings() -> Element {
         //     *lang.write() = String::from(js_lang[0].as_str().unwrap());
         // }
     });
-    info!("Lang is {}", lang());
+    info!("Lang is {}", (data.lang_code)());
     rsx! {}
 }
 

@@ -51,10 +51,13 @@ fn App() -> Element {
 
 #[component]
 fn Home() -> Element {
-    let lang: Signal<String> = use_context();
+    // let lang: Signal<String> = use_context();
+    let data = use_context::<ApplicationData>();
     let nav = navigator();
-    if &lang() as &str != "en" {
-        nav.push(Route::HomeLang { lang: lang() });
+    if &(data.lang_code)() as &str != "en" {
+        nav.push(Route::HomeLang {
+            lang: (data.lang_code)(),
+        });
     }
     rsx! {
         HomeContent {}
@@ -63,9 +66,10 @@ fn Home() -> Element {
 
 #[component]
 fn HomeLang(lang: String) -> Element {
-    let lang: Signal<String> = use_context();
+    // let lang: Signal<String> = use_context();
+    let data = use_context::<ApplicationData>();
     let nav = navigator();
-    if &lang() as &str == "en" {
+    if &(data.lang_code)() as &str == "en" {
         nav.push(Route::Home {});
     }
     rsx! {
@@ -75,8 +79,9 @@ fn HomeLang(lang: String) -> Element {
 
 #[component]
 fn HomeContent() -> Element {
-    let lang: Signal<String> = use_context();
-    let lang_id = &LanguageIdentifier::from_str(&lang() as &str).unwrap();
+    let data = use_context::<ApplicationData>();
+    // let lang: Signal<String> = use_context();
+    let lang_id = &LanguageIdentifier::from_str(&(data.lang_code)() as &str).unwrap();
     rsx! {
         div { class: "p-4 text-2xl",
             h1 { class: "font-bold", {LOCALES.lookup(lang_id, "hello-world")} }

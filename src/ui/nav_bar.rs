@@ -1,12 +1,14 @@
 use super::lang_drop::LangDropDown;
 use crate::constants::LANG_CODES;
+use crate::model::app_state::ApplicationData;
 use crate::utils::evals::*;
 use crate::Route;
 use dioxus::prelude::*;
 
 #[component]
 pub fn NavBar() -> Element {
-    let mut lang: Signal<String> = use_context();
+    // let mut lang: Signal<String> = use_context();
+    let mut data = use_context::<ApplicationData>();
 
     rsx! {
         nav { class: "px-2 py-4 shadow-lg flex flex-row justify-around",
@@ -17,7 +19,7 @@ pub fn NavBar() -> Element {
                             "en" => rsx!{
                                 Link {
                                     onclick: move |_| {
-                                        lang.set(code.to_string());
+                                        (data.lang_code).set(code.to_string());
                                         let eval = ButtonLang();
                                         eval.send(code.into()).unwrap();
                                     },
@@ -28,7 +30,7 @@ pub fn NavBar() -> Element {
                             _ => rsx!{
                                 Link {
                                     onclick: move |_| {
-                                        lang.set(code.to_string());
+                                        (data.lang_code).set(code.to_string());
                                         let eval = ButtonLang();
                                         eval.send(code.into()).unwrap();
                                     },

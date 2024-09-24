@@ -1,7 +1,21 @@
 use dioxus::prelude::*;
-use once_cell::sync::Lazy;
 
-pub static FLAGS: Lazy<[fn() -> Element; 4]> = Lazy::new(|| [Us, De, Es, UAE]);
+pub fn flags() -> [Element; 4] {
+    [
+        rsx! {
+            Us {}
+        },
+        rsx! {
+            De {}
+        },
+        rsx! {
+            Es {}
+        },
+        rsx! {
+            UAE {}
+        },
+    ]
+}
 
 #[component]
 pub fn Lang() -> Element {

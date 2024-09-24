@@ -1,6 +1,7 @@
 use crate::{
     constants::{LANG_CODES, LANG_NAMES},
-    ui::icon::{Lang, FLAGS},
+    model::app_state::ApplicationData,
+    ui::icon::{flags, Lang},
     ButtonLang, Route, LOCALES,
 };
 use dioxus::prelude::*;
@@ -10,10 +11,17 @@ use unic_langid::LanguageIdentifier;
 
 #[component]
 pub fn LangDropDown() -> Element {
-    let mut lang: Signal<String> = use_context();
+    // let mut lang: Signal<String> = use_context();
+    let mut data = use_context::<ApplicationData>();
     let mut show_lang_menu = use_signal(|| false);
-    let lang_id = &LanguageIdentifier::from_str(&lang() as &str).unwrap();
-    let rtl = use_memo(move || if lang() == "ar" { true } else { false });
+    let lang_id = &LanguageIdentifier::from_str(&(data.lang_code)() as &str).unwrap();
+    let rtl = use_memo(move || {
+        if (data.lang_code)() == "ar" {
+            true
+        } else {
+            false
+        }
+    });
     rsx! {
         div { class: "relative ml-3",
             div {
@@ -39,25 +47,25 @@ pub fn LangDropDown() -> Element {
                 aria_orientation: "vertical",
                 aria_labelledby: "user-menu-button",
                 ul { class: "flex flex-col",
-                    for ((code , name) , Flag) in LANG_CODES.iter().zip(LANG_NAMES.iter()).zip(FLAGS.iter()) {
+                    for ((code , name) , flag) in LANG_CODES.iter().zip(LANG_NAMES.iter()).zip(flags().iter()) {
                         match *code {
                             "en" => rsx!{
                                 Link { class: "grid grid-cols-3 gap-4 text-sm text-gray-700 hover:bg-slate-300 cursor-pointer hover:ring-1 items-center px-2 py-1",
                                     onclick: move |_| {
-                                        lang.set(code.to_string());
+                                        (data.lang_code).set(code.to_string());
                                         let eval = ButtonLang();
                                         eval.send((*code).into()).unwrap();
                                         show_lang_menu.toggle();
                                     },
                                     to: Route::Home {},
-                                        div{ class: "col-span-1 ", Flag {  } },
+                                        div{ class: "col-span-1 ",  { flag } },
                                         div { class: "col-span-2 text-base", {LOCALES.lookup(lang_id, name)} }
                                 },
                             },
                             _ => rsx!{
                                 Link { class: "grid grid-cols-3 gap-4 text-sm text-gray-700 hover:bg-slate-300 cursor-pointer hover:ring-1 items-center px-2 py-1",
                                     onclick: move |_| {
-                                        lang.set(code.to_string());
+                                        (data.lang_code).set(code.to_string());
                                         let eval = ButtonLang();
                                         eval.send((*code).into()).unwrap();
                                         show_lang_menu.toggle();
@@ -65,7 +73,7 @@ pub fn LangDropDown() -> Element {
                                     to: Route::HomeLang {
                                         lang: code.to_string(),
                                     },
-                                    div{ class: "col-span-1 ", Flag {  } },
+                                    div{ class: "col-span-1 ",  { flag } },
                                     div { class: "col-span-2 text-base", {LOCALES.lookup(lang_id, name)} }
                                 }
                             }
