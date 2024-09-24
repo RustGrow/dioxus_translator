@@ -5,7 +5,7 @@ mod ui;
 mod utils;
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{info, Level};
-use fluent_templates::{static_loader, Loader};
+use fluent_templates::Loader;
 use model::app_state::ApplicationData;
 use ui::nav_bar::NavBar;
 // use serde_json::Value;

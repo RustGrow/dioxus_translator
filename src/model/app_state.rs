@@ -1,6 +1,4 @@
 use dioxus::prelude::*;
-use std::str::FromStr;
-use unic_langid::LanguageIdentifier;
 
 #[derive(Clone, Copy, Default)]
 pub struct ApplicationData {
