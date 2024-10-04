@@ -11,7 +11,11 @@ pub fn NavBar() -> Element {
     let mut data = use_context::<ApplicationData>();
 
     rsx! {
-        nav { class: "px-2 py-4 shadow-lg flex flex-row justify-around",
+        nav {
+            class: "px-2 py-4 shadow-lg flex flex-row justify-around",
+            onclick: move |_| {
+                (data.show_lang_menu).set(false);
+            },
             ul { class: "flex flex-row w-full items-center",
                 for code in LANG_CODES {
                     li { class: "ring-1 bg-blue-200 px-2 mx-2 rounded-lg",
@@ -22,7 +26,6 @@ pub fn NavBar() -> Element {
                                         (data.lang_code).set(code.to_string());
                                         let eval = ButtonLang();
                                         eval.send(code.into()).unwrap();
-                                        (data.show_lang_menu).set(false);
                                     },
                                     to: Route::Home {},
                                     "{code}"
@@ -34,7 +37,6 @@ pub fn NavBar() -> Element {
                                         (data.lang_code).set(code.to_string());
                                         let eval = ButtonLang();
                                         eval.send(code.into()).unwrap();
-                                        (data.show_lang_menu).set(false);
                                     },
                                     to: Route::HomeLang {
                                         lang: code.to_string(),

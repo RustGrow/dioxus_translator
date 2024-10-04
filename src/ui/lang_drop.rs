@@ -1,19 +1,35 @@
 use crate::{
-    constants::{LANG_CODES, LANG_NAMES},
+    constants::{LANG_CODES, LANG_NAMES, LOCALES},
     model::app_state::ApplicationData,
     ui::icon::{flags, Lang},
-    ButtonLang, Route, LOCALES,
+    ButtonLang, Route,
 };
 use dioxus::prelude::*;
+// use dioxus_logger::tracing::Value;
 use fluent_templates::Loader;
 use std::str::FromStr;
 use unic_langid::LanguageIdentifier;
 
+// fn use_outside_click<F>(callback: F)
+// where
+//     F: FnMut(&web_sys::Event) + Clone + 'static,
+// {
+//     let mut event_listener = use_signal(|| None);
+
+//     use_effect(move || {
+//         event_listener.set(Some(gloo_events::EventListener::new(
+//             &document,
+//             "click",
+//             move |e| {
+//                 callback(&e);
+//             },
+//         )))
+//     });
+// }
+
 #[component]
 pub fn LangDropDown() -> Element {
-    // let mut lang: Signal<String> = use_context();
     let mut data = use_context::<ApplicationData>();
-    // let mut show_lang_menu = use_signal(|| false);
     let lang_id = &LanguageIdentifier::from_str(&(data.lang_code)() as &str).unwrap();
     let rtl = use_memo(move || {
         if (data.lang_code)() == "ar" {
@@ -22,6 +38,12 @@ pub fn LangDropDown() -> Element {
             false
         }
     });
+
+    // use_outside_click(move |_| {
+    //     // update the signal when document is clicked
+    //     (data.show_lang_menu).set(false);
+    // });
+
     rsx! {
         div { class: "relative ml-3",
             div {
@@ -31,7 +53,10 @@ pub fn LangDropDown() -> Element {
                     id: "user-menu-button",
                     aria_expanded: "false",
                     aria_haspopup: "true",
-                    onclick: move |_| (data.show_lang_menu).toggle(),
+                    onclick: move |ev| {
+                        ev.stop_propagation();
+                        (data.show_lang_menu).toggle();
+                    },
                     // "Up high!"
                     span { class: "absolute -inset-1.5" }
                     span { class: "sr-only", "Open user menu" }
@@ -40,6 +65,7 @@ pub fn LangDropDown() -> Element {
                 }
             }
             div {
+                id: "popup",
                 class: "absolute z-10 mt-2 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none",
                 class: if !(data.show_lang_menu)() { "hidden" },
                 class: if !rtl() { "right-0" } else { "left-0" },

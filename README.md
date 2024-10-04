@@ -43,10 +43,10 @@ and 👇
 npx tailwindcss -i ./input.css -o ./assets/tailwind.css --watch
 ```
 
-Run the following command in the root of the project to start the Dioxus dev server:
+Run the following command in the root of the project to start the Dioxus dev server. (Hot reload is the default now):
 
 ```bash
-dx serve --hot-reload true
+dx serve
 ```
 
 - Open the browser to http://localhost:8080
@@ -81,25 +81,12 @@ dioxus-logger = "0.5.1"
 4. Start the Tailwind CSS compiler and the Dioxus dev server in different terminals:
 ```bash
 npx tailwindcss -i ./input.css -o ./assets/tailwind.css --watch
-dx serve --hot-reload true
+dx serve
 ```
 
-5. The Script now has some bug
+5. You need to set a script reference to use Tailwind CDN
 ```rust
-❌ Script { src: "https://cdn.tailwindcss.com" } //Has some bug
-```
-You need to set a script reference to use Tailwind CDN inside Dioxus.toml
-✔️ Tested
-```toml
-# include `assets` in web platform
-[web.resource]
-
-# CSS style file
-
-style = []
-
-# Javascript code file
-script = ["https://cdn.tailwindcss.com"]
+Script { src: "https://cdn.tailwindcss.com" } 
 ```
 
 # If you need a local stylesheet for custom styles inside input.css.
@@ -124,19 +111,19 @@ script = ["https://cdn.tailwindcss.com"]
 ```rust
 rsx!{
     p { "I" }
-    div { class: "red", "want to" }
-    div { class: "yellow", "burger" }
-    div { class: "blue", "burger" }
+    div { class: "red", "love" }
+    div { class: "yellow", "Dioxus" }
+    div { class: "blue", "team" }
 }
 ```
 3. Rebuild the app:
 
 button r on terminal 
 
-or 
+or Ctrl + C and
 
 ```bash
-dx serve --hot-reload true
+dx serve
 ```
 
 # How to make a release
