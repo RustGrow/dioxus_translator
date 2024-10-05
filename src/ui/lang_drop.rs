@@ -38,9 +38,14 @@ pub fn LangDropDown() -> Element {
                     id: "user-menu-button",
                     aria_expanded: "false",
                     aria_haspopup: "true",
+                    //if show_lang_menu == true use_outside_click to false and then click to true
                     onclick: move |ev| {
                         ev.stop_propagation();
-                        (data.show_lang_menu).set(false);
+                        if (data.show_lang_menu)() {
+                            (data.show_lang_menu).set(true);
+                        } else {
+                            (data.show_lang_menu).set(false);
+                        };
                     },
                     // "Up high!"
                     span { class: "absolute -inset-1.5" }
@@ -66,7 +71,7 @@ pub fn LangDropDown() -> Element {
                                         (data.lang_code).set(code.to_string());
                                         let eval = ButtonLang();
                                         eval.send((*code).into()).unwrap();
-                                        (data.show_lang_menu).toggle();
+                                        // (data.show_lang_menu).toggle();
                                     },
                                     to: Route::Home {},
                                         div{ class: "col-span-1 ",  { flag } },
@@ -79,7 +84,7 @@ pub fn LangDropDown() -> Element {
                                         (data.lang_code).set(code.to_string());
                                         let eval = ButtonLang();
                                         eval.send((*code).into()).unwrap();
-                                        (data.show_lang_menu).toggle();
+                                        // (data.show_lang_menu).toggle();
                                     },
                                     to: Route::HomeLang {
                                         lang: code.to_string(),
