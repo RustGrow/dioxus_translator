@@ -1,6 +1,7 @@
 use super::lang_drop::LangDropDown;
 use crate::constants::LANG_CODES;
 use crate::model::app_state::ApplicationData;
+use crate::utils::click::close_elements;
 use crate::utils::evals::*;
 use crate::Route;
 use dioxus::prelude::*;
@@ -11,11 +12,10 @@ pub fn NavBar() -> Element {
     let mut data = use_context::<ApplicationData>();
 
     rsx! {
-        nav {
-            class: "px-2 py-4 shadow-lg flex flex-row justify-around",
-            onclick: move |_| {
-                (data.show_lang_menu).set(false);
-            },
+        nav { class: "px-2 py-4 shadow-lg flex flex-row justify-around",
+            // onclick: move |_| {
+            //     close_elements();
+            // },
             ul { class: "flex flex-row w-full items-center",
                 for code in LANG_CODES {
                     li { class: "ring-1 bg-blue-200 px-2 mx-2 rounded-lg",
@@ -47,6 +47,13 @@ pub fn NavBar() -> Element {
                         }
                     }
                 }
+            }
+            div {
+                class: "bg-blue-200 ring-2 mx-40 px-4 py-2 rounded-lg",
+                onclick: move |ev| {
+                    ev.stop_propagation();
+                },
+                "stop_propagation"
             }
             LangDropDown {}
         }

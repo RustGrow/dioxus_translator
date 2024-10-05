@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, PartialEq)]
 pub struct ApplicationData {
     pub lang_code: Signal<String>,
     pub show_lang_menu: Signal<bool>,

@@ -2,6 +2,7 @@ use crate::{
     constants::{LANG_CODES, LANG_NAMES, LOCALES},
     model::app_state::ApplicationData,
     ui::icon::{flags, Lang},
+    utils::click::{close_elements, use_outside_click},
     ButtonLang, Route,
 };
 use dioxus::prelude::*;
@@ -9,23 +10,6 @@ use dioxus::prelude::*;
 use fluent_templates::Loader;
 use std::str::FromStr;
 use unic_langid::LanguageIdentifier;
-
-// fn use_outside_click<F>(callback: F)
-// where
-//     F: FnMut(&web_sys::Event) + Clone + 'static,
-// {
-//     let mut event_listener = use_signal(|| None);
-
-//     use_effect(move || {
-//         event_listener.set(Some(gloo_events::EventListener::new(
-//             &document,
-//             "click",
-//             move |e| {
-//                 callback(&e);
-//             },
-//         )))
-//     });
-// }
 
 #[component]
 pub fn LangDropDown() -> Element {
@@ -39,10 +23,11 @@ pub fn LangDropDown() -> Element {
         }
     });
 
-    // use_outside_click(move |_| {
-    //     // update the signal when document is clicked
-    //     (data.show_lang_menu).set(false);
-    // });
+    use_effect(use_reactive!(|| {
+        use_outside_click(move |_| {
+            (data.show_lang_menu).toggle();
+        });
+    }));
 
     rsx! {
         div { class: "relative ml-3",
@@ -55,7 +40,7 @@ pub fn LangDropDown() -> Element {
                     aria_haspopup: "true",
                     onclick: move |ev| {
                         ev.stop_propagation();
-                        (data.show_lang_menu).toggle();
+                        (data.show_lang_menu).set(false);
                     },
                     // "Up high!"
                     span { class: "absolute -inset-1.5" }

@@ -12,7 +12,7 @@ use ui::nav_bar::NavBar;
 use constants::{LOCALES, STYLE};
 use std::str::FromStr;
 use unic_langid::LanguageIdentifier;
-use utils::evals::*;
+use utils::{click::close_elements, evals::*};
 
 #[derive(Clone, Routable, Debug, PartialEq)]
 #[rustfmt::skip]
@@ -35,15 +35,16 @@ pub enum Route {
 fn main() {
     dioxus_logger::init(Level::INFO).expect("failed to init logger");
     info!("starting app");
-
     launch(App);
 }
 
 fn App() -> Element {
     use_context_provider(|| Signal::new("en".to_string()));
     use_context_provider(ApplicationData::new);
+
     rsx! {
         LangSettings {}
+        Script { src: "https://cdn.tailwindcss.com" }
         head::Link { rel: "stylesheet", href: STYLE }
         Router::<Route> {}
     }
@@ -83,9 +84,10 @@ fn HomeContent() -> Element {
     // let lang: Signal<String> = use_context();
     let lang_id = &LanguageIdentifier::from_str(&(data.lang_code)() as &str).unwrap();
     rsx! {
-        div {
-            class: "p-4 text-2xl h-screen",
-            onclick: move |_| { (data.show_lang_menu).set(false) },
+        div { class: "p-4 text-2xl h-screen",
+            // onclick: move |_| {
+            //     close_elements();
+            // },
             h1 { class: "font-bold", {LOCALES.lookup(lang_id, "hello-world")} }
             div { {LOCALES.lookup(lang_id, "homepage")} }
             p { {LOCALES.lookup(lang_id, "dioxus")} }
