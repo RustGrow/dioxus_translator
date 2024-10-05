@@ -1,6 +1,7 @@
 use super::lang_drop::LangDropDown;
 use crate::constants::LANG_CODES;
 use crate::model::app_state::ApplicationData;
+use crate::utils::click::close_elements;
 use crate::utils::evals::*;
 use crate::Route;
 use dioxus::prelude::*;
@@ -14,7 +15,7 @@ pub fn NavBar() -> Element {
         nav {
             class: "px-2 py-4 shadow-lg flex flex-row justify-around",
             onclick: move |_| {
-                (data.show_lang_menu).set(false);
+                close_elements();
             },
             ul { class: "flex flex-row w-full items-center",
                 for code in LANG_CODES {

@@ -12,7 +12,7 @@ use ui::nav_bar::NavBar;
 use constants::{LOCALES, STYLE};
 use std::str::FromStr;
 use unic_langid::LanguageIdentifier;
-use utils::evals::*;
+use utils::{click::close_elements, evals::*};
 
 #[derive(Clone, Routable, Debug, PartialEq)]
 #[rustfmt::skip]
@@ -79,13 +79,15 @@ fn HomeLang(lang: String) -> Element {
 
 #[component]
 fn HomeContent() -> Element {
-    let mut data = use_context::<ApplicationData>();
+    let data = use_context::<ApplicationData>();
     // let lang: Signal<String> = use_context();
     let lang_id = &LanguageIdentifier::from_str(&(data.lang_code)() as &str).unwrap();
     rsx! {
         div {
             class: "p-4 text-2xl h-screen",
-            onclick: move |_| { (data.show_lang_menu).set(false) },
+            onclick: move |_| {
+                close_elements();
+            },
             h1 { class: "font-bold", {LOCALES.lookup(lang_id, "hello-world")} }
             div { {LOCALES.lookup(lang_id, "homepage")} }
             p { {LOCALES.lookup(lang_id, "dioxus")} }
